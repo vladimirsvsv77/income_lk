@@ -1,10 +1,12 @@
 from flask import Flask, request
+from flask_cors import CORS
 from flask_restful import abort, Api, Resource
 from vacancies import Vacancy
 import json
 
 app = Flask(__name__)
 api = Api(app)
+CORS(app)
 
 vac = Vacancy()
 vacancies = vac.vacancies
@@ -36,6 +38,12 @@ class VacList(Resource):
         return vacancies
 
 
+class CityList(Resource):
+    def post(self):
+        return [{'value': i} for i in vac.cities_list]
+
+
+api.add_resource(CityList, '/cities')
 api.add_resource(VacList, '/vacancies')
 api.add_resource(Vacancy, '/vac/<vac_id>')
 

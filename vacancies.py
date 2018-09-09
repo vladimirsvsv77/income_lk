@@ -51,6 +51,7 @@ class Vacancy:
 
     def __init__(self):
         self.vacancies = {}
+        self.cities_list = cities_list
 
         if os.path.isfile("backup.json"):
             with open('backup.json') as outfile:
