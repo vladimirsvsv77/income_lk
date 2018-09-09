@@ -31,15 +31,15 @@
     <div id="vacancy_list" style="display: none">
         <h3 id="city_name"></h3>
         <div uk-lightbox>
-            <a class="uk-button uk-button-default">Торговый агент</a><br><br>
-            <a class="uk-button uk-button-default">Торговый представитель</a><br><br>
-            <a class="uk-button uk-button-default">Водитель-экспедитор</a><br><br>
-            <a class="uk-button uk-button-default">Комплектовщик</a><br><br>
-            <a class="uk-button uk-button-default">Водитель электропогрузочной техники</a><br><br>
-            <a class="uk-button uk-button-default">Водитель ричтрака</a><br><br>
-            <a class="uk-button uk-button-default">Упаковщик готовой продукции</a><br><br>
-            <a class="uk-button uk-button-default">Оператор-наладчик</a><br><br>
-            <a class="uk-button uk-button-default">Оператор производственной линии</a><br><br>
+            <a class="uk-button uk-button-default name">Торговый агент</a><br><br>
+            <a class="uk-button uk-button-default name">Торговый представитель</a><br><br>
+            <a class="uk-button uk-button-default name">Водитель-экспедитор</a><br><br>
+            <a class="uk-button uk-button-default name">Комплектовщик</a><br><br>
+            <a class="uk-button uk-button-default name">Водитель электропогрузочной техники</a><br><br>
+            <a class="uk-button uk-button-default name">Водитель ричтрака</a><br><br>
+            <a class="uk-button uk-button-default name">Упаковщик готовой продукции</a><br><br>
+            <a class="uk-button uk-button-default name">Оператор-наладчик</a><br><br>
+            <a class="uk-button uk-button-default name">Оператор производственной линии</a><br><br>
         </div>
     </div>
 
@@ -57,7 +57,7 @@
                             <input class="uk-input uk-form-width-medium uk-form-small" type="text" placeholder="Уровень дохода">
                         </div>
 
-                        <label>Включена: <input class="uk-checkbox" type="checkbox" checked></label>
+                        <label>Включена: <input id="switch" class="uk-checkbox" type="checkbox" checked></label>
 
                     </div>
                 </div>
@@ -66,7 +66,6 @@
         </div>
     </div>
 
-
 </div>
 
 
@@ -74,12 +73,29 @@
 </html>
 
 <script>
-    var city = '';
+    var city = name = '';
     var vacancies;
 
     $.get('http://127.0.0.1:5000/vacancies', function(res){
 	    vacancies = res;
     });
+
+    function update_vac(vac_id, value) {
+        if(value){
+            value = '1';
+        }else {
+            value = '0';
+        }
+
+        $.ajax({
+            url: 'http://127.0.0.1:5000/vac/' + vac_id,
+            method: 'PUT',
+            data: {'is_active': value},
+            success: function() {
+                console.log('value changed');
+            }
+        });
+    }
 
     function get_vac_id(city, name){
         for(key in vacancies){
@@ -99,15 +115,29 @@
             });
         });
 
-        $(".uk-button.uk-button-default").click(function (e) {
+        $(".uk-button.uk-button-default.name").click(function (e) {
             document.getElementById("vacancy_list").style.display = 'none';
             document.getElementById("vacancy_info").style.display = 'block';
             $("#vac_name").html("Вакансия: " + e.target.firstChild.data);
+            name = e.target.firstChild.data;
+
+            $.get('http://127.0.0.1:5000/vac/' + get_vac_id(city, name), function(res){
+                console.log(res.is_active);
+                if(res.is_active === '1'){
+                    $("#switch").prop('checked', true);
+                }else{
+                    $("#switch").prop('checked', false);
+                }
+            });
         });
 
         $("#back_to_list_vac").click(function () {
             document.getElementById("vacancy_list").style.display = 'block';
             document.getElementById("vacancy_info").style.display = 'none';
-        })
+        });
+
+        $("#switch").change(function (e) {
+            update_vac(get_vac_id(city, name), e.target.checked)
+        });
     });
 </script>
