@@ -73,10 +73,11 @@
 </html>
 
 <script>
+    var api_url = 'http://127.0.0.1:5000';
     var city = name = '';
     var vacancies;
 
-    $.get('http://127.0.0.1:5000/vacancies', function(res){
+    $.get(api_url + '/vacancies', function(res){
 	    vacancies = res;
     });
 
@@ -88,7 +89,7 @@
         }
 
         $.ajax({
-            url: 'http://127.0.0.1:5000/vac/' + vac_id,
+            url: api_url + '/vac/' + vac_id,
             method: 'PUT',
             data: {'is_active': value},
             success: function() {
@@ -121,7 +122,7 @@
             $("#vac_name").html("Вакансия: " + e.target.firstChild.data);
             name = e.target.firstChild.data;
 
-            $.get('http://127.0.0.1:5000/vac/' + get_vac_id(city, name), function(res){
+            $.get(api_url + '/vac/' + get_vac_id(city, name), function(res){
                 console.log(res.is_active);
                 if(res.is_active === '1'){
                     $("#switch").prop('checked', true);
