@@ -46,7 +46,7 @@
     <!--vacancy info-->
     <div id="vacancy_info" style="display: none">
         <div class="uk-child-width-expand@s uk-text-center" uk-grid>
-            <button class="uk-button uk-button-default" style="width: 20%; margin: 0 40%">Назад к списку вакансий</button>
+            <button id="back_to_list_vac" class="uk-button uk-button-default" style="width: 20%; margin: 0 40%">Назад к списку вакансий</button>
 
             <div style="width: 50%; height: 20%; margin: 0 25%">
                 <div class="uk-card uk-card-default uk-card-body">
@@ -74,18 +74,40 @@
 </html>
 
 <script>
+    var city = '';
+    var vacancies;
+
+    $.get('http://127.0.0.1:5000/vacancies', function(res){
+	    vacancies = res;
+    });
+
+    function get_vac_id(city, name){
+        for(key in vacancies){
+            if(vacancies[key]['city'] === city && vacancies[key]['name'] === name) {
+                return key;
+            }
+        }
+        return false;
+    }
+
     $( document ).ready(function() {
         $("#city").change(function() {
             $("li").click(function(e) {
-              console.log('li clicked');
               document.getElementById("vacancy_list").style.display = 'block';
               $("#city_name").html("Вакансии в городе: " + e.target.firstChild.data);
+              city = e.target.firstChild.data;
             });
         });
 
-        $(".uk-button.uk-button-default").click(function () {
+        $(".uk-button.uk-button-default").click(function (e) {
             document.getElementById("vacancy_list").style.display = 'none';
             document.getElementById("vacancy_info").style.display = 'block';
+            $("#vac_name").html("Вакансия: " + e.target.firstChild.data);
         });
+
+        $("#back_to_list_vac").click(function () {
+            document.getElementById("vacancy_list").style.display = 'block';
+            document.getElementById("vacancy_info").style.display = 'none';
+        })
     });
 </script>
