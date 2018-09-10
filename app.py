@@ -1,4 +1,4 @@
-from flask import Flask, request
+from flask import Flask, request, render_template
 from flask_cors import CORS
 from flask_restful import abort, Api, Resource
 from vacancies import Vacancy
@@ -41,6 +41,11 @@ class VacList(Resource):
 class CityList(Resource):
     def post(self):
         return [{'value': i} for i in vac.cities_list]
+
+
+@app.route('/')
+def hello(name=None):
+    return render_template('index.html', name=name)
 
 
 api.add_resource(CityList, '/cities')
