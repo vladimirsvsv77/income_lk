@@ -53,4 +53,4 @@ api.add_resource(VacList, '/vacancies')
 api.add_resource(Vacancy, '/vac/<vac_id>')
 
 if __name__ == '__main__':
-    app.run(port=2122, debug=True)
+    app.run(host='0.0.0.0', port=2122, debug=True)
